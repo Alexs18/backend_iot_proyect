@@ -1,6 +1,6 @@
 let {body,check} = require('express-validator');
 const Pool = require('../Database');
-let {searchemail} = require('../Database/querys/login.query')
+let {searchemail} = require('../Database/querys/login.query');
 
 async function ValidationUser(email) {
     let queryuser = searchemail(email);

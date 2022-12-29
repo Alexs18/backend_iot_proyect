@@ -9,7 +9,7 @@ module.exports = {
         RETURNING id, password, nombre, token`
     },
     searchemail(email){
-        return `select id from sparksiot.users where email = '${email}' `
+        return `select token, password, nombre, email, id from sparksiot.users where email = '${email}' `
     }
 
 }

@@ -2,61 +2,18 @@ let Pool = require('../Database/index');
 let bcrypt = require('bcrypt');
 let token = require('jsonwebtoken');
 let {SECRET_KEY} = require('../config');
-let {registerquery} = require('../Database/querys/login.query');
-let {validationResult} = require('express-validator');
+let {registerquery, searchemail} = require('../Database/querys/login.query');
+let {GenerateToken} = require('../handlers/login.handlers');
+
 
 class Login{
 
-    async login(req, res){
-
-        console.log('esta pasando al log');
-       let {password, email} = req.body;
-       
-       let token2 = token.sign({body:'linux'}, '1234', {expiresIn:'1h'});
-       console.log(token2);
-       console.log('pasa por el login ');
-       console.log('lo decodifica');
-       let token3 = token.decode(token2)
-       console.log('decodificado');
-       console.log(token3);
-       console.log('verfiricwdo');
-       token.verify(token2, '1234', (error, token)=>{
-        console.log('token verificao');
-        console.log(token);
-        console.log('errr');
-        console.log(error);
-       })
-       try {
-       
-        let {rows} = await Pool.query(`select * from users where email = '${email}'`);
-        
-        if (rows[0].password === password) {
-            res.status(200).json({
-                message:`El usuario ${rows[0].nombre} se logió correctamente`,
-                token:true,
-                nombre:rows[0].nombre,
-                id:rows[0].id
-            });
-            console.log('el usuario se logeo correctamente');   
-        }else{
-            res.status(400).json({
-                message:`Las contraseñas no coinciden`,
-                token:false
-            })
-        }
-       
-       } catch (error) {
-        console.log(error)
-       }
-       
-    }
     async Register(req, res){
 
         let {nombre, apellido, password, email} = req.body;
         let newpassword = await bcrypt.hash(password, 10);
         let user = {nombre, apellido, newpassword, email};
         let savedtoken = token.sign(user, SECRET_KEY, {expiresIn:'24h'});
-       
         try {
 
             let queryregister = registerquery(user, savedtoken);
@@ -73,6 +30,62 @@ class Login{
                 icon:'error'
             })
         }
+    }
+    async login(req, res){
+
+       let {password, email} = req.body;
+
+       try {
+       
+        let queryuser = searchemail(email);
+        let {rows} = await Pool.query(queryuser);
+        let validpwd = await bcrypt.compare(password, rows[0].password);
+        
+        if (!validpwd) {
+            return res.json({
+                message:'No se logró iniciar sesión, usuario o contraseña incorrecta',
+                status:401
+            })
+        }
+        let tokenready = GenerateToken({id:rows[0].id, email:rows[0].email});
+        res.cookie('session', tokenready);
+        return res.json(
+            {
+                message:'Usuario Inició sesión correctamente',
+                token:tokenready
+            }
+        )
+      
+       } catch (error) {
+
+          return res
+                .status(500).
+                json({
+                    message:'ocurrió un error al iniciar sesión, contacte con sistemas',
+                    status:500
+                }) 
+
+       }
+       
+    }
+    async logout(req, res){
+
+        let {session} = req.cookies
+        
+        if (session) {
+            res.clearCookie(session);
+            res.cookie('session', '');
+            return res.json({
+                message:'su sesión fue cerrada exitosamente',
+                icon:'success',
+                status:200
+            })           
+        }
+        return res.json({
+            message:'su sesión ya fue cerrada',
+            status:303 
+        })
+        
     }
     async GetRol(req, res){
         try {
