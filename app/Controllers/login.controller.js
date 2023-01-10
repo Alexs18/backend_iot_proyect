@@ -39,30 +39,41 @@ class Login{
        
         let queryuser = searchemail(email);
         let {rows} = await Pool.query(queryuser);
+        if (rows.length <= 0) {
+            return res.status(400).json({
+                message:'Al parecer no existe usuario asociado ',
+                status:400,
+                icon:'warning'
+            })
+        }
         let validpwd = await bcrypt.compare(password, rows[0].password);
         
         if (!validpwd) {
             return res.json({
                 message:'No se logró iniciar sesión, usuario o contraseña incorrecta',
-                status:401
+                status:401,
+                icon:'warning'
             })
         }
         let tokenready = GenerateToken({id:rows[0].id, email:rows[0].email});
         res.cookie('session', tokenready);
-        return res.json(
+        return res.status(200).json(
             {
                 message:'Usuario Inició sesión correctamente',
-                token:tokenready
+                token:tokenready,
+                icon:'success'
             }
         )
       
        } catch (error) {
-
+          console.log('el error');
+          console.log(error);
           return res
                 .status(500).
                 json({
                     message:'ocurrió un error al iniciar sesión, contacte con sistemas',
-                    status:500
+                    status:500,
+                    icon:'error'
                 }) 
 
        }
