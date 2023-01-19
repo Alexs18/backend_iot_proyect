@@ -61,7 +61,8 @@ class Login{
             {
                 message:'Usuario Inició sesión correctamente',
                 token:tokenready,
-                icon:'success'
+                icon:'success',
+                status:200
             }
         )
       
@@ -113,6 +114,14 @@ class Login{
         } catch (error) {
             console.log(error);
         }
+    }
+    async ValidateToken(req, res){
+        res.status(200)
+            .json({
+                status:200,
+                tokenvalid:true,
+                message:'token valido'
+            })
     }
 }
 
