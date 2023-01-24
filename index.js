@@ -12,6 +12,6 @@ app.use(cookie());
 app.use(RouterPeliculas, RouterRelaciones);
 app.use(RouterLogin);
 
-app.listen(3001, ()=>{
+app.listen(3000, ()=>{
     console.log('estamos corriendo en el 3000')
 })
