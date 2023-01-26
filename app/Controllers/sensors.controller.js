@@ -1,11 +1,11 @@
 const Pool = require("../Database");
-const { registersensor, shearbyname, lissensors } = require("../Database/querys/sensors");
+const { registersensor, shearbyname, lissensors, eliminacionlogica, updatesensor } = require("../Database/querys/sensors");
 
 class Sensors{
 
     async RegisterSensors(req, res){
         let {sensor} = req.body;
-        let querybyname = shearbyname(sensor.elemento.quimico);
+        let querybyname = shearbyname(sensor.elementoquimico);
         let foundEQ = await Pool.query(querybyname);
         try {
             if (foundEQ.rows.length >0) {
@@ -54,16 +54,73 @@ class Sensors{
             let listSensors = await Pool.query(sensorsquery);
             return res.status(200)
                    .json({
-                        listasensor: listSensors.rows[0],
+                        listasensor: listSensors.rows,
                         cantidadsensors:listSensors.rowCount
                    })
         } catch (error) {
+            console.log('el error ');
+            console.log(error);
             return res.status(500)
                    .json({
                         listasensor:[],
                         message:'Ocurrió un error, contacte con sistemas'
                    })
         }
+    }
+
+    async DeleteSensors(req, res){
+        let {id} = req.params;
+        let deletesensor = eliminacionlogica(id);
+        let {rows} = await Pool.query(deletesensor);
+        if (rows.length < 0) {
+            return res.status(400)
+                   .json({
+                        message:'No se logró eliminar el sensor',
+                        icon:'warning',
+                        status:400
+                   });
+        }
+        return res.status(200)
+        .json({
+             message:'Se eliminó correctamente el sensor',
+             icon:'success',
+             status:200
+        });
+    }
+    async UpdateSensor(req, res){
+        let {sensor} = req.body;
+        let {id} = req.params;
+        let updatequery = updatesensor(sensor, id);
+        
+        try {
+            let {rows} = await Pool.query(updatequery);
+            debugger;
+            if (rows.length < 0) {
+                return res.status(400)
+                .json({
+                     message:'No se logró actualizar el sensor',
+                     icon:'warning',
+                     status:400
+                });
+            }
+            return res.status(200)
+            .json({
+                 message:'El sensor fue actualizado correctamente',
+                 icon:'success',
+                 status:200
+            });
+
+        } catch (error) {
+            console.log('el erorr');
+            console.log(error);
+            return res.status(500)
+                .json({
+                     message:'Existió un error en el servidor, contacte con el Administrador',
+                     icon:'error',
+                     status:500
+                });
+        }
+
     }
 
 }

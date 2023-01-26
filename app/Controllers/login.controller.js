@@ -2,7 +2,7 @@ let Pool = require('../Database/index');
 let bcrypt = require('bcrypt');
 let token = require('jsonwebtoken');
 let {SECRET_KEY} = require('../config');
-let {registerquery, searchemail, registerrol, obtenerusuarios} = require('../Database/querys/login.query');
+let {registerquery, searchemail, registerrol, obtenerusuarios, obtenerusuarioslogin} = require('../Database/querys/login.query');
 let {GenerateToken} = require('../handlers/login.handlers');
 
 
@@ -71,12 +71,16 @@ class Login{
         }
         let tokenready = GenerateToken({id:rows[0].id, email:rows[0].email});
         res.cookie('session', tokenready);
+        let DatosUser = obtenerusuarioslogin(rows[0].id);
+        let DataUser = await Pool.query(DatosUser);
+
         return res.status(200).json(
             {
                 message:'Usuario Inició sesión correctamente',
                 token:tokenready,
                 icon:'success',
-                status:200
+                status:200,
+                user:DataUser.rows[0]
             }
         )
       
