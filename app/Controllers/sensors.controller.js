@@ -5,6 +5,7 @@ class Sensors{
 
     async RegisterSensors(req, res){
         let {sensor} = req.body;
+
         let querybyname = shearbyname(sensor.elementoquimico);
         let foundEQ = await Pool.query(querybyname);
         try {
@@ -37,6 +38,8 @@ class Sensors{
                 }
             ) 
         } catch (error) {
+            console.log('el error');
+            console.log(error);
             return res.status(500)
             .json(
                 {

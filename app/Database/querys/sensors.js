@@ -2,7 +2,7 @@ module.exports = {
     registersensor(sensor){
         let {elementoquimico, descripcion, imagen} = sensor;
         return `insert into sparksiot.sensors (elemento_quimico, descripcion, estado, img)
-        values ('${elementoquimico}', '${descripcion}','true' ,'img')
+        values ('${elementoquimico}', '${descripcion}','true' ,'${imagen}')
         RETURNING id`
     },
     lissensors(){
@@ -19,7 +19,7 @@ module.exports = {
     updatesensor(sensor, id){
         let {elementoquimico, descripcion, imagen} = sensor;
         return `update sparksiot.sensors set descripcion = '${descripcion}',
-                    elemento_quimico = '${elementoquimico}'
+                    elemento_quimico = '${elementoquimico}' , img = '${imagen}'
                 where id = ${id}
                 RETURNING id;`
     }
