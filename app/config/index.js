@@ -2,7 +2,7 @@ const dotenv = require('dotenv').config()
 
 module.exports = {
     SECRET_KEY:process.env.SECRET_KEY,
-    PORT:process.env.PORT,
+    APPPORT:process.env.APPPORT,
     USER:process.env.userdatabase,
     PASSWORD:process.env.passworddatabase,
     configDatabase:{

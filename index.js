@@ -7,7 +7,7 @@ const RouterLogin = require('./app/routes/Login.Routes');
 const RouterSensors = require('./app/routes/Sensors.Routes');
 const RouterUser = require('./app/routes/User.Routes');
 const cookie = require('cookie-parser');
-const { PORT } = require('./app/config');
+const { APPPORT } = require('./app/config');
 
 app.use(cors());
 app.use(Express.json());
@@ -17,6 +17,6 @@ app.use(RouterLogin);
 app.use(RouterSensors);
 app.use(RouterUser);
 
-app.listen(PORT, ()=>{
-    console.log(` estamos corriendo en el puerto ${PORT}`)
+app.listen(APPPORT, ()=>{
+    console.log(` estamos corriendo en el puerto ${APPPORT}`)
 })
