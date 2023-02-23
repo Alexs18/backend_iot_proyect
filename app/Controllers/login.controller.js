@@ -165,7 +165,7 @@ class Login{
             })
         }
     }
-}
+} 
 
 let InstanciaLogin = new Login();
 module.exports = InstanciaLogin;

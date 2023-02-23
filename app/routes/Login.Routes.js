@@ -11,6 +11,6 @@ Router.post('/logout', logout);
 Router.post('/register', Validationregister ,RegisterValidation, Register);
 Router.get('/permisos/:id', GetRol);
 Router.get('/listausers', GetUser);
-Router.get('/ValidarToken/:token', AuthToken, ValidateToken);
+Router.get('/ValidarToken', AuthToken, ValidateToken);
 
 module.exports = Router;

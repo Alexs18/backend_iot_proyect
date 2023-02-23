@@ -1,7 +1,6 @@
 const dotenv = require('dotenv').config({
     path:'.env'
 });
-
 module.exports = {
     SECRET_KEY:process.env.SECRET_KEY,
     APPPORT:process.env.APPPORT,
@@ -14,4 +13,4 @@ module.exports = {
         user:process.env.USER,
         password:process.env.PASSWORD
     }
-}
+} 
