@@ -1,4 +1,4 @@
-let Pool = require('../Database/index');
+let {Pool} = require('../Database/index');
 const { eliminacionlogicauser, updateuser } = require('../Database/querys/users');
 
 class user{

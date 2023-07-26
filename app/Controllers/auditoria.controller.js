@@ -2,42 +2,31 @@ let {Pool} = require('../Database/index');
 let bcrypt = require('bcrypt');
 let token = require('jsonwebtoken');
 let {SECRET_KEY} = require('../config');
-let {registerquery, searchemail, registerrol, obtenerusuarios, obtenerusuarioslogin} = require('../Database/querys/login.query');
-let {GenerateToken} = require('../handlers/login.handlers');
 
 
 class Login{
 
-    async Register(req, res){
+    async Registerauditoria(req, res){
 
-        let {nombre, apellido, password, email, idrol, telefono} = req.body;
-        let newpassword = await bcrypt.hash(password, 10);
-        let user = {nombre, apellido, newpassword, email, telefono};
-        let savedtoken = token.sign(user, SECRET_KEY, {expiresIn:'24h'});
+        let {id_user, id_tipoauditoria} = req.body;
+        const query_insert_auditoria = `insert into sparksiot.auditoria (id_user, id_tipoauditoria,
+            fecha, hora) values (${id_user}, ${id_tipoauditoria}, current_date, current_time)`
         try {
 
-            let queryregister = registerquery(user, savedtoken);
-            let {rows} = await Pool.query(queryregister);
+            let {rows} = await Pool.query(query_insert_auditoria);
             if (rows.length <= 0) {
                 res.status(300).json({
-                    message:'No se logró registrar el usuario correctamente',
+                    message:'No se logró registrar la auditoria correctamente',
                     icon:'warning'
                 });
                 return      
             }
-            let resgiterrolquery = registerrol(idrol, rows[0].id);
-            let rolregisted = await Pool.query(resgiterrolquery);
-            if (rolregisted.rows.length <=0) {
-                res.status(300).json({
-                    message:'Ocurrió un error al asignale permisos al usuario',
-                    icon:'warning'
-                });      
-            }
             res.status(200).json({
-                message:'usuario Registrado correctamente',
+                message:'Auditoria Generada correctamente',
                 user:rows,
                 icon:'sucess'
-            })
+            });
+            return
         } catch (error) {
             res.status(500).json({
                 message:'ocurrio un error con el servidor, contacte con el administrador',
