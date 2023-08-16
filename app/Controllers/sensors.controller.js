@@ -1,5 +1,5 @@
-const Pool = require("../Database");
-const { registersensor, shearbyname, lissensors, eliminacionlogica, updatesensor } = require("../Database/querys/sensors");
+const {Pool} = require("../Database");
+const { registersensor, shearbyname, lissensors, eliminacionlogica, updatesensor, lissensorsbad } = require("../Database/querys/sensors");
 
 class Sensors{
 
@@ -54,6 +54,25 @@ class Sensors{
     async ListaSensors(req, res){
         try {
             let sensorsquery = lissensors();
+            let listSensors = await Pool.query(sensorsquery);
+            return res.status(200)
+                   .json({
+                        listasensor: listSensors.rows,
+                        cantidadsensors:listSensors.rowCount
+                   })
+        } catch (error) {
+            console.log('el error ');
+            console.log(error);
+            return res.status(500)
+                   .json({
+                        listasensor:[],
+                        message:'Ocurrió un error, contacte con sistemas'
+                   })
+        }
+    }
+    async ListaSensorsbad(req, res){
+        try {
+            let sensorsquery = lissensorsbad();
             let listSensors = await Pool.query(sensorsquery);
             return res.status(200)
                    .json({

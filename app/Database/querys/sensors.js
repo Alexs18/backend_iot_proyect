@@ -8,6 +8,9 @@ module.exports = {
     lissensors(){
         return `select * from sparksiot.sensors where estado = true`
     },
+    lissensorsbad(){
+        return `select * from sparksiot.sensors where estado = false`
+    },
     eliminacionlogica(id){
         return `update sparksiot.sensors set estado = false where id = '${id}'
             RETURNING id`

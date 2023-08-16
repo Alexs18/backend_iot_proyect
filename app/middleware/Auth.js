@@ -8,7 +8,8 @@ class AuthMiddelware{
 
         try {
             let header = req.headers.authorization;
-            if(header === null || undefined) return {status:401, msg:'unauthorization'}
+            if(header === null || header === undefined) return res.status(401).json({status:401, msg:'unauthorization'})
+            
             let token = header.split(' ')[1];     
             tokenlibrary.verify(token, SECRET_KEY, (err, decoded)=>{
                 if (err) {
@@ -21,6 +22,7 @@ class AuthMiddelware{
                 next();
             })    
         } catch (error) {
+        
             res.status(500).json({
                 status:500,
                 message:'Ocurrió un error en el servidor, contacte con sistemas',

@@ -1,11 +1,10 @@
 let {Pool, PoolServer} = require('../Database/index');
 
-class Migracion{
+class MigracionExtraer{
 
     async extraerdatos(req, res){
        const queryextraer = `select * from public.uleamsensors`;
        const dataextra = await PoolServer.query(queryextraer);
-       console.log(dataextra.rows); 
        for await (const data of dataextra.rows) {
         
         const insertardatos = `insert into sparksiot.uleamsensors
@@ -51,13 +50,15 @@ class Migracion{
             ${data.name}
         ) returning id `
         const {rows} = await Pool.query(insertardatos);
-        console.log('log 2');
-        console.log(rows);
+        console.log('INGRESANDO DATOS');
        }
-
+       return {
+        msg:'datos extraidos con exito',
+        status:202
+       }
     }
 
 }
 
-const MigracionEx = new Migracion();
+const MigracionEx = new MigracionExtraer();
 module.exports = MigracionEx
