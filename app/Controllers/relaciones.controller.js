@@ -1,4 +1,4 @@
-const Pool = require('../Database/index');
+const {Pool} = require('../Database/index');
 
 class RelacionesController{
 
