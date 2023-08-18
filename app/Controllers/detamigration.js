@@ -37,54 +37,54 @@ class Migracion{
                 
                 
             }
-            // if (sensor.elemento_quimico === 'hum') {
+            if (sensor.elemento_quimico === 'hum') {
                 
-            //     const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
-            //     values ('${fechaISO}', '${sensor.id}', ${data.hum}) returning id `
-            //     const {rows} = await Pool.query(insertatemp);
-            //     console.log('INGRESANDO DATOS HUM');
+                const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
+                values ('${fechaISO}', '${sensor.id}', ${data.hum}) returning id `
+                const {rows} = await Pool.query(insertatemp);
+                console.log('INGRESANDO DATOS HUM');
 
-            // }
-            // if (sensor.elemento_quimico === 'pm1') {
+            }
+            if (sensor.elemento_quimico === 'pm1') {
                 
-            //     const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
-            //     values ('${fechaISO}', '${sensor.id}', ${data.pm1}) returning id `
-            //     const {rows} = await Pool.query(insertatemp);
-            //     console.log('INGRESANDO DATOS pm1');
+                const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
+                values ('${fechaISO}', '${sensor.id}', ${data.pm1}) returning id `
+                const {rows} = await Pool.query(insertatemp);
+                console.log('INGRESANDO DATOS pm1');
 
-            // }
-            // if (sensor.elemento_quimico === 'pm25') {
+            }
+            if (sensor.elemento_quimico === 'pm25') {
                 
-            //     const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
-            //     values ('${fechaISO}', '${sensor.id}', ${data.pm25}) returning id `
-            //     const {rows} = await Pool.query(insertatemp);
-            //     console.log('INGRESANDO DATOS pm25');
+                const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
+                values ('${fechaISO}', '${sensor.id}', ${data.pm25}) returning id `
+                const {rows} = await Pool.query(insertatemp);
+                console.log('INGRESANDO DATOS pm25');
 
-            // }
-            // if (sensor.elemento_quimico === 'pm40') {
+            }
+            if (sensor.elemento_quimico === 'pm40') {
                 
-            //     const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
-            //     values ('${fechaISO}', '${sensor.id}', ${data.pm40}) returning id `
-            //     const {rows} = await Pool.query(insertatemp);
-            //     console.log('INGRESANDO DATOS pm40');
+                const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
+                values ('${fechaISO}', '${sensor.id}', ${data.pm40}) returning id `
+                const {rows} = await Pool.query(insertatemp);
+                console.log('INGRESANDO DATOS pm40');
 
-            // }
-            // if (sensor.elemento_quimico === 'no2') {
+            }
+            if (sensor.elemento_quimico === 'no2') {
                 
-            //     const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
-            //     values ('${fechaISO}', '${sensor.id}', ${data.no2}) returning id `
-            //     const {rows} = await Pool.query(insertatemp);
-            //     console.log('INGRESANDO DATOS n02');
+                const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
+                values ('${fechaISO}', '${sensor.id}', ${data.no2}) returning id `
+                const {rows} = await Pool.query(insertatemp);
+                console.log('INGRESANDO DATOS n02');
 
-            // }
-            // if (sensor.elemento_quimico === 'so2') {
+            }
+            if (sensor.elemento_quimico === 'so2') {
                 
-            //     const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
-            //     values ('${fechaISO}', '${sensor.id}', ${data.so2}) returning id `
-            //     const {rows} = await Pool.query(insertatemp);
-            //     console.log('INGRESANDO DATOS so2');
+                const insertatemp = `insert into sparksiot.detasensor (timesensor, idsensor, valor)
+                values ('${fechaISO}', '${sensor.id}', ${data.so2}) returning id `
+                const {rows} = await Pool.query(insertatemp);
+                console.log('INGRESANDO DATOS so2');
 
-            // }
+            }
         }
 
        }
@@ -107,6 +107,28 @@ class Migracion{
         // Construir la cadena en formato ISO 8601
         const fechaISO = `${anio}-${mes}-${dia}T${hora}:${minutos}:${segundos}Z`;
         return fechaISO
+    }
+
+    async verificardatos(req, res){
+
+        try {
+            
+            const {body} = req;
+            const detas = body.join(',');
+            const selectsensors = `select ds.timesensor, ds.valor from sparksiot.sensors as s 
+            inner join sparksiot.detasensor as ds on s.id =  ds.idsensor
+            where s.id in (${detas})`;
+            const {rows} = await Pool.query(selectsensors);
+            if (rows.length >0) {
+                res.status(200).send( {data:rows, msg:'detalles de sensores'});
+            }
+        } catch (error) {
+            console.log(error);
+            console.log('error');
+            res.status(500).send({data:[], msg:'Ocurrió error interno en el servidor, contacte con sistemas'});
+        }
+
+
     }
 
 }
