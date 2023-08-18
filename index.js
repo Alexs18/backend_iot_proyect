@@ -9,9 +9,13 @@ const RouterUser = require('./app/routes/User.Routes');
 const cookie = require('cookie-parser');
 const { APPPORT } = require('./app/config');
 
-app.use(cors({
-    origin:'*'
-}));
+const corsOptions = {
+    origin: '*', // Cambia esto al dominio que deseas permitir
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Métodos HTTP permitidos
+    allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
+  };
+
+app.use(cors(corsOptions));
 app.use(Express.json());
 app.use(cookie());
 app.use(RouterPeliculas, RouterRelaciones); 
