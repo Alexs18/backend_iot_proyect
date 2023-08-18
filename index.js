@@ -9,7 +9,9 @@ const RouterUser = require('./app/routes/User.Routes');
 const cookie = require('cookie-parser');
 const { APPPORT } = require('./app/config');
 
-app.use(cors());
+app.use(cors({
+    origin:'*'
+}));
 app.use(Express.json());
 app.use(cookie());
 app.use(RouterPeliculas, RouterRelaciones); 
