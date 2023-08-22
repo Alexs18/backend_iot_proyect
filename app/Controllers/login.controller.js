@@ -133,14 +133,6 @@ class Login{
             console.log(error);
         }
     }
-    async ValidateToken(req, res){
-        res.status(200)
-            .json({
-                status:200,
-                tokenvalid:true,
-                message:'token valido'
-            })
-    }
     async GetUser(req, res){
         
         try {
@@ -165,6 +157,23 @@ class Login{
             })
         }
     }
+    verifyToken(req, res, next) {
+        console.log('headers');
+        console.log(req.headers['authorization']);
+        const token = req.headers['authorization'];
+      
+        if (!token) {
+          return res.status(403).json({ message: 'Token no proporcionado' });
+        }
+      
+        jwt.verify(token, SECRET_KEY, (err, decoded) => {
+          if (err) {
+            return res.status(401).json({ message: 'Token inválido' });
+          }
+          req.userId = decoded.id;
+          next();
+        });
+      }
 } 
 
 let InstanciaLogin = new Login();

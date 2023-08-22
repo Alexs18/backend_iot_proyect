@@ -15,7 +15,9 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization'], // Encabezados permitidos
   };
 
-app.use(cors(corsOptions));
+app.use(cors({
+    origin:'*'
+}));
 app.use(Express.json());
 app.use(cookie());
 app.use(RouterPeliculas, RouterRelaciones); 
